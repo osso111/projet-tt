@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android" tools:ignore="HardcodedText" >
+    <item
+        android:id="@+id/navigation_payment"
+        android:icon="@drawable/payment"
+        android:title="Payment" />
+    <item
+    android:id="@+id/navigation_history"
+    android:icon="@drawable/history"
+    android:title="History" />
+    <item
+        android:id="@+id/navigation_offers"
+        android:icon="@drawable/offer_icon"
+        android:title="Offers" />
+
+
+</menu>

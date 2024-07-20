@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@drawable/corner_round"
+    >
+
+    <TextView
+        android:id="@+id/num_facture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Num Facture"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/num_tel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Num Tel" />
+
+    <TextView
+        android:id="@+id/date_creation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date Creation" />
+
+    <TextView
+        android:id="@+id/date_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date Payment" />
+
+    <TextView
+        android:id="@+id/delai_fin_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delai Fin Payment" />
+
+    <TextView
+        android:id="@+id/etat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Etat" />
+
+    <TextView
+        android:id="@+id/type_fact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type Fact" />
+
+    <TextView
+        android:id="@+id/montant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Montant" />
+</LinearLayout>
