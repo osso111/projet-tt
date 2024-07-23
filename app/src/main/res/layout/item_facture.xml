@@ -3,55 +3,53 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp"
-    android:background="@drawable/corner_round"
-    >
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground">
 
     <TextView
-        android:id="@+id/num_facture"
+        android:id="@+id/textViewNumFacture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Num Facture"
-        android:textStyle="bold" />
+        android:text="Num Facture" />
 
     <TextView
-        android:id="@+id/num_tel"
+        android:id="@+id/textViewNumTel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Num Tel" />
 
     <TextView
-        android:id="@+id/date_creation"
+        android:id="@+id/textViewDateCreation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Date Creation" />
 
     <TextView
-        android:id="@+id/date_payment"
+        android:id="@+id/textViewDatePayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Date Payment" />
 
     <TextView
-        android:id="@+id/delai_fin_payment"
+        android:id="@+id/textViewDelaiFinPayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delai Fin Payment" />
 
     <TextView
-        android:id="@+id/etat"
+        android:id="@+id/textViewEtat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Etat" />
 
     <TextView
-        android:id="@+id/type_fact"
+        android:id="@+id/textViewTypeFact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Type Fact" />
 
     <TextView
-        android:id="@+id/montant"
+        android:id="@+id/textViewMontant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Montant" />

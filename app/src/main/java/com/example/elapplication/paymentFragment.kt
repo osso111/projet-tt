@@ -1,6 +1,6 @@
-// PaymentFragment.kt
 package com.example.elapplication
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +15,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-
+@SuppressLint("SetTextI18n")
 class PaymentFragment : Fragment() {
 
     private val TAG = "PaymentFragment"
@@ -58,56 +58,90 @@ class PaymentFragment : Fragment() {
             val query = phoneNumberEditText.text.toString()
             Log.d(TAG, "validate_button onClick: query = $query")
             if (query.isNotBlank()) {
-                payment(query, billsContainer)
+                fetchFactures(query, billsContainer)
             } else {
                 Log.d(TAG, "validate_button onClick: query is blank")
             }
         }
     }
 
-    private fun payment(query: String, billsContainer: LinearLayout) {
-        Log.d(TAG, "payment: called with query = $query")
-
+    private fun fetchFactures(query: String, billsContainer: LinearLayout) {
+        Log.d(TAG, "fetchFactures: called with query = $query")
+        val container = billsContainer
         lifecycleScope.launch {
             try {
-                // Determine if the query is a phone number or bill number
                 val isPhoneNumber = query.length == 8
                 val bills = if (isPhoneNumber) {
-                    Log.d(TAG, "payment: querying by phone number")
-                    RetrofitInstance.instance.getUnpaidBills("unpaid", phoneNumber = query)
+                    Log.d(TAG, "fetchFactures: querying by phone number")
+                    RetrofitInstance.instance.getUnpaidBills(phoneNumber = query)
                 } else {
-                    Log.d(TAG, "payment: querying by bill number")
-                    RetrofitInstance.instance.getUnpaidBills("unpaid", billNumber = query)
+                    Log.d(TAG, "fetchFactures: querying by bill number")
+                    RetrofitInstance.instance.getUnpaidBills(billNumber = query)
                 }
 
-                // Clear the previous results
-                billsContainer.removeAllViews()
+                // Log the full response
+                Log.d(TAG, "fetchFactures: response = $bills")
 
-                // Log the bills retrieved and display in the container
-                bills.forEach { facture ->
-                    Log.d(TAG, "payment: retrieved facture = $facture")
+                // Update the UI with the fetched factures
+                updateFactures(container, bills)
 
-                    val billView = TextView(requireContext()).apply {
-                        text = """
-                            Numéro Facture: ${facture.num_facture}
-                            Numéro Téléphone: ${facture.num_tel}
-                            Date Création: ${facture.date_creation}
-                            Date Payment: ${facture.date_payment ?: "N/A"}
-                            Délai Fin Payment: ${facture.delai_fin_payment}
-                            État: ${facture.etat}
-                            Type Fact: ${facture.type_fact}
-                            Montant: ${facture.montant}
-                        """.trimIndent()
-                    }
-                    billsContainer.addView(billView)
-                }
-
-                // Handle the result (display in UI or log)
-                Log.d(TAG, "payment: completed successfully")
+                Log.d(TAG, "fetchFactures: completed successfully")
 
             } catch (e: Exception) {
-                Log.e(TAG, "payment: error occurred", e)
+                Log.e(TAG, "fetchFactures: error occurred", e)
             }
         }
+    }
+
+
+
+    private fun updateFactures(container: LinearLayout, factures: List<Facture>) {
+        container.removeAllViews()
+        val inflater = LayoutInflater.from(context)
+
+        factures.forEach { facture ->
+            Log.d(TAG, "payment: retrieved facture = $facture")
+            val billView = TextView(requireContext()).apply {
+                text = """
+                        Numéro Facture: ${facture.numFacture}
+                        Numéro Téléphone: ${facture.numTel}
+                        Date Création: ${facture.dateCreation}
+                        Date Payment: ${facture.datePayment ?: "N/A"}
+                        Délai Fin Payment: ${facture.delaiFinPayment}
+                        État: ${facture.etat}
+                        Type Fact: ${facture.typeFact}
+                        Montant: ${facture.montant}
+                    """.trimIndent()
+            }
+            billView.setOnClickListener {
+                showConfirmationDialog(facture)
+            }
+
+            container.addView(billView)
+        }
+    }
+
+
+    private fun showConfirmationDialog(facture: Facture) {
+        // Create and show a confirmation dialog
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Confirmation")
+            .setMessage("Are you sure you want to pay this bill?")
+            .setPositiveButton("Yes") { _, _ ->
+                // Handle the confirmation action
+                lifecycleScope.launch {
+                    try {
+                        // Call the API to update the bill status to 'paid'
+                        RetrofitInstance.instance.updateFacture(facture.numFacture)
+                        // Refresh the bill list
+                        fetchFactures(facture.numTel ?: "", view?.findViewById(R.id.bills_container) ?: return@launch)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error updating bill status", e)
+                    }
+                }
+            }
+            .setNegativeButton("No", null)
+            .create()
+        dialog.show()
     }
 }

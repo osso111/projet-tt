@@ -2,10 +2,7 @@
 
 import com.example.elapplication.Facture
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 data class LoginRequest(val phone_number: String, val password: String)
 data class LoginResponse(val success: Boolean)
@@ -20,10 +17,14 @@ interface ApiService {
     @POST("signup")
     fun signup(@Body signupRequest: SignupRequest): Call<SignupResponse>
 
-    @GET("facture") // Define the appropriate endpoint
+    @GET("factures/unpaid")
     suspend fun getUnpaidBills(
-        @Query("state") state: String,
         @Query("phoneNumber") phoneNumber: String? = null,
         @Query("billNumber") billNumber: String? = null
     ): List<Facture>
+
+    @PUT("factures/{numFacture}/update")
+    suspend fun updateFacture(
+        @Path("numFacture") numFacture: String
+    ): Facture
 }

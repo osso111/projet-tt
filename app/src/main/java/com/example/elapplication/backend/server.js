@@ -58,36 +58,46 @@ app.post('/signup', (req, res) => {
     });
 });
 
-app.get('/facture', (req, res) => {
-    const state = req.query.state;
-    const phoneNumber = req.query.phoneNumber;
-    const billNumber = req.query.billNumber;
+app.get('/factures/unpaid', (req, res) => {
+    const { phoneNumber, billNumber } = req.query;
+    const status = 'unpaid';
 
-    console.log(`Received request: state=${state}, phoneNumber=${phoneNumber}, billNumber=${billNumber}`);
+    console.log('Received request:', { status, phoneNumber, billNumber });
 
+    // Construct the query based on provided parameters
     let query = 'SELECT * FROM facture WHERE etat = ?';
-    let queryParams = [state];
+    const params = [status];
 
     if (phoneNumber) {
         query += ' AND num_tel = ?';
-        queryParams.push(phoneNumber);
-        console.log(`Querying by phone number: ${phoneNumber}`);
+        params.push(phoneNumber);
     } else if (billNumber) {
         query += ' AND num_facture = ?';
-        queryParams.push(billNumber);
-        console.log(`Querying by bill number: ${billNumber}`);
+        params.push(billNumber);
     }
 
-    console.log(`Executing query: ${query} with params: ${queryParams}`);
+    console.log('Executing query:', query, 'with params:', params);
 
-    db.query(query, queryParams, (err, results) => {
-        if (err) {
-            console.error(`Error executing query: ${err.message}`);
-            res.status(500).send(err);
+    // Execute the query (this example uses a generic db.query method)
+    db.query(query, params, (error, results) => {
+        if (error) {
+            console.error('Database query error:', error);
+            res.status(500).send('Internal Server Error');
         } else {
-        console.log('Query Results:', results);
-            res.json(results);
+            console.log('Query Results:', results);
+            res.send(results);
         }
+    });
+});
+
+app.post('/update', (req, res) => {
+    const { numFacture, datePayment } = req.query;
+    const query = 'UPDATE facture SET etat = "paid", date_payment = ? WHERE num_facture = ?';
+    const params = [datePayment, numFacture];
+
+    db.query(query, params, (err, result) => {
+        if (err) throw err;
+        res.sendStatus(200);
     });
 });
 

@@ -9,6 +9,7 @@ appcompat = "1.6.1"
 material = "1.10.0"
 activity = "1.9.0"
 constraintlayout = "2.1.4"
+navigationFragmentKtx = "2.7.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -21,6 +22,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.11.0" }
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version = "2.11.0" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
