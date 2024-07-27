@@ -47,4 +47,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
 }

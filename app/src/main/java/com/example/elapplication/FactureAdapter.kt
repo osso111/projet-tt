@@ -7,27 +7,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class FactureAdapter(
-    private var factures: List<Facture>,
-    private val onItemClick: (Facture) -> Unit
+    private val factures: List<Facture>,
+    private val onConfirmPayment: (Facture) -> Unit
 ) : RecyclerView.Adapter<FactureAdapter.FactureViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FactureViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_facture, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.bill_item, parent, false)
         return FactureViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: FactureViewHolder, position: Int) {
         val facture = factures[position]
-        holder.bind(facture, onItemClick)
+        holder.bind(facture)
+        holder.itemView.setOnClickListener {
+            onConfirmPayment(facture)
+        }
     }
 
     override fun getItemCount(): Int = factures.size
-
-    fun updateFactures(newFactures: List<Facture>) {
-        factures = newFactures
-        notifyDataSetChanged()
-    }
 
     class FactureViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val numFactureTextView: TextView = itemView.findViewById(R.id.num_facture_text_view)

@@ -15,6 +15,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 @SuppressLint("SetTextI18n")
 class PaymentFragment : Fragment() {
 
@@ -98,20 +102,31 @@ class PaymentFragment : Fragment() {
     private fun updateFactures(container: LinearLayout, factures: List<Facture>) {
         container.removeAllViews()
         val inflater = LayoutInflater.from(context)
-
+         fun formatDateString(dateString: String?): String {
+            return try {
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                val date: Date? = inputFormat.parse(dateString)
+                date?.let { outputFormat.format(it) } ?: "N/A"
+            } catch (e: Exception) {
+                "N/A"
+            }
+        }
         factures.forEach { facture ->
             Log.d(TAG, "payment: retrieved facture = $facture")
             val billView = TextView(requireContext()).apply {
                 text = """
                         Numéro Facture: ${facture.numFacture}
                         Numéro Téléphone: ${facture.numTel}
-                        Date Création: ${facture.dateCreation}
-                        Date Payment: ${facture.datePayment ?: "N/A"}
-                        Délai Fin Payment: ${facture.delaiFinPayment}
+                        Date Création: ${formatDateString(facture.dateCreation)}
+                        Date Payment: ${formatDateString(facture.datePayment)}
+                        Délai Fin Payment: ${formatDateString(facture.delaiFinPayment)}
                         État: ${facture.etat}
                         Type Fact: ${facture.typeFact}
                         Montant: ${facture.montant}
                     """.trimIndent()
+
+
             }
             billView.setOnClickListener {
                 showConfirmationDialog(facture)
@@ -133,6 +148,7 @@ class PaymentFragment : Fragment() {
                     try {
                         // Call the API to update the bill status to 'paid'
                         RetrofitInstance.instance.updateFacture(facture.numFacture)
+                        Log.d(TAG, "numfact=  ${facture.numFacture}")
                         // Refresh the bill list
                         fetchFactures(facture.numTel ?: "", view?.findViewById(R.id.bills_container) ?: return@launch)
                     } catch (e: Exception) {

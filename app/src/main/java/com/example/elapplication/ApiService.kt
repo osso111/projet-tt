@@ -27,4 +27,8 @@ interface ApiService {
     suspend fun updateFacture(
         @Path("numFacture") numFacture: String
     ): Facture
+    @POST("history")
+    fun getFactureHistory(
+        @Body request: Map<String, String>
+    ): Call<List<Facture>>
 }

@@ -100,6 +100,19 @@ app.post('/update', (req, res) => {
         res.sendStatus(200);
     });
 });
+app.post('/history', (req, res) => {
+    const { phoneNumber } = req.body;
+    const query = 'SELECT * FROM facture WHERE num_tel = ?';
+    const params = [phoneNumber];
+
+    db.query(query, params, (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.json(results);
+    });
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
