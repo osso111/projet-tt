@@ -1,56 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?android:attr/selectableItemBackground">
+    android:background="@drawable/corner_round"
+    android:backgroundTint="@color/white"
+    tools:ignore="HardcodedText"
+    android:layout_margin="20dp">
 
     <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textAlignment="center"
         android:id="@+id/textViewNumFacture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Num Facture" />
 
     <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:id="@+id/textViewNumTel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Num Tel" />
 
     <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:id="@+id/textViewDateCreation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Date Creation" />
 
     <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:id="@+id/textViewDatePayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Date Payment" />
 
     <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:id="@+id/textViewDelaiFinPayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delai Fin Payment" />
 
     <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:id="@+id/textViewEtat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Etat" />
 
     <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:id="@+id/textViewTypeFact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Type Fact" />
 
     <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:id="@+id/textViewMontant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Montant" />
+        android:text="Montant"/>
 </LinearLayout>

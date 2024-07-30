@@ -1,13 +1,15 @@
-//mainactivity.kt
-
 package com.example.elapplication
+
 import LoginRequest
 import LoginResponse
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -18,11 +20,23 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
-
 class MainActivity : AppCompatActivity() {
+    private lateinit var saveLoginSwitch: Switch
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize shared preferences
+        sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+
+        // Check if login info is saved
+        if (sharedPreferences.getBoolean("IS_LOGGED_IN", false)) {
+            navigateToHomeScreen(sharedPreferences.getString("PHONE_NUMBER", "") ?: "")
+            finish()
+            return
+        }
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -41,6 +55,33 @@ class MainActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             login()
         }
+
+        saveLoginSwitch = findViewById(R.id.stay_connected)
+
+        val savedPhoneNumber = sharedPreferences.getString("PHONE_NUMBER", null)
+        val savedPassword = sharedPreferences.getString("PASSWORD", null)
+
+        if (savedPhoneNumber != null && savedPassword != null) {
+            // Autofill login info if saved
+            findViewById<EditText>(R.id.phone_number).setText(savedPhoneNumber)
+            findViewById<EditText>(R.id.password).setText(savedPassword)
+        }
+
+        saveLoginSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val editor = sharedPreferences.edit()
+            if (isChecked) {
+                val phoneNumber = findViewById<EditText>(R.id.phone_number).text.toString()
+                val password = findViewById<EditText>(R.id.password).text.toString()
+                editor.putString("PHONE_NUMBER", phoneNumber)
+                editor.putString("PASSWORD", password)
+                editor.putBoolean("IS_LOGGED_IN", true)
+            } else {
+                editor.remove("PHONE_NUMBER")
+                editor.remove("PASSWORD")
+                editor.putBoolean("IS_LOGGED_IN", false)
+            }
+            editor.apply()
+        }
     }
 
     private fun login() {
@@ -56,9 +97,17 @@ class MainActivity : AppCompatActivity() {
             apiService.login(loginRequest).enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     if (response.isSuccessful && response.body()?.success == true) {
-                        val intent = Intent(this@MainActivity, HomeScreen::class.java).apply{
-                            putExtra("phoneNumber", phoneNumber)}
+                        val editor = sharedPreferences.edit()
+                        if (saveLoginSwitch.isChecked) {
+                            editor.putBoolean("IS_LOGGED_IN", true)
+                        }
+                        editor.apply()
+
+                        val intent = Intent(this@MainActivity, HomeScreen::class.java).apply {
+                            putExtra("phoneNumber", phoneNumber)
+                        }
                         startActivity(intent)
+                        finish()
                     } else {
                         Toast.makeText(this@MainActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
                     }
@@ -71,5 +120,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun navigateToHomeScreen(phoneNumber: String) {
+        val intent = Intent(this, HomeScreen::class.java)
+        intent.putExtra("phoneNumber", phoneNumber)
+        startActivity(intent)
     }
 }

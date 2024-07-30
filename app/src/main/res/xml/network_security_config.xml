@@ -4,7 +4,7 @@
         <domain includeSubdomains="true">192.168.0.3</domain>
         <domain includeSubdomains="true">192.168.0.14</domain>
         <domain includeSubdomains="true">192.168.1.13</domain>
-        <domain includeSubdomains="true">192.168.43.112</domain><!-- Your local IP address -->
+        <domain includeSubdomains="true">192.168.43.112</domain><!-- pahone -->
         <domain includeSubdomains="true">127.0.0.1</domain> <!-- Loopback address for the emulator -->
         <domain includeSubdomains="true">localhost</domain> <!-- Loopback address for the local server -->
     </domain-config>

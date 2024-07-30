@@ -90,17 +90,27 @@ app.get('/factures/unpaid', (req, res) => {
     });
 });
 
-app.post('/update', (req, res) => {
+app.put('/update', (req, res) => {
+    console.log('update called');
     const { numFacture, datePayment } = req.query;
+    console.log('numfact =', numFacture);
+    console.log('datepay =', datePayment);
     const query = 'UPDATE facture SET etat = "paid", date_payment = ? WHERE num_facture = ?';
     const params = [datePayment, numFacture];
 
-    db.query(query, params, (err, result) => {
-        if (err) throw err;
-        res.sendStatus(200);
+    db.query(query, params, (error, results) => {
+        if (error) {
+            console.error('Database query error:', error);
+            res.status(500).send('Internal Server Error');
+        } else {
+            console.log('Query Results:', results);
+            res.send(results);
+        }
     });
 });
+
 app.post('/history', (req, res) => {
+    console.log('history called');
     const { phoneNumber } = req.body;
     const query = 'SELECT * FROM facture WHERE num_tel = ?';
     const params = [phoneNumber];
@@ -111,6 +121,7 @@ app.post('/history', (req, res) => {
             return res.status(500).send('Internal Server Error');
         }
         res.json(results);
+        console.log('history Results:', results);
     });
 });
 

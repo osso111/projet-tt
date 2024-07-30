@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
@@ -125,19 +126,35 @@ class PaymentFragment : Fragment() {
                         Type Fact: ${facture.typeFact}
                         Montant: ${facture.montant}
                     """.trimIndent()
-
-
+                setPadding(30, 20, 16, 50)
+                setBackgroundColor(resources.getColor(R.color.white, null)) // Set background color to white
+                setBackgroundResource(R.drawable.corner_round)
+                setTextColor(resources.getColor(R.color.black, null))
+                textSize = 16f
+                setOnClickListener {
+                    Log.d(TAG, "payment: clicked on facture = $facture")
+                    showConfirmationDialog(facture)
+                    }
+                }
+            val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(20, 20, 20, 20) // Left, top, right, bottom margins
             }
-            billView.setOnClickListener {
-                showConfirmationDialog(facture)
-            }
-
+            billView.layoutParams = layoutParams
             container.addView(billView)
         }
     }
 
+    fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = Date()
+        return dateFormat.format(date)
+    }
 
     private fun showConfirmationDialog(facture: Facture) {
+        val currentDate = getCurrentDate()
         // Create and show a confirmation dialog
         val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             .setTitle("Confirmation")
@@ -147,7 +164,7 @@ class PaymentFragment : Fragment() {
                 lifecycleScope.launch {
                     try {
                         // Call the API to update the bill status to 'paid'
-                        RetrofitInstance.instance.updateFacture(facture.numFacture)
+                        RetrofitInstance.instance.updateFacture(facture.numFacture, currentDate)
                         Log.d(TAG, "numfact=  ${facture.numFacture}")
                         // Refresh the bill list
                         fetchFactures(facture.numTel ?: "", view?.findViewById(R.id.bills_container) ?: return@launch)
@@ -160,4 +177,5 @@ class PaymentFragment : Fragment() {
             .create()
         dialog.show()
     }
+
 }

@@ -1,20 +1,27 @@
 package com.example.elapplication
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeScreen : AppCompatActivity() {
 
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_screen)
+
+        sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE)
 
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
 
@@ -42,5 +49,36 @@ class HomeScreen : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(R.id.fragment_container, PaymentFragment()).commit()
         }
+
+        val menuImageView = findViewById<ImageView>(R.id.iv_account)
+        menuImageView.setOnClickListener {
+            showPopupMenu(it)
+        }
+    }
+
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.menuInflater.inflate(R.menu.menu_home, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_logout -> {
+                    logout()
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
+
+    private fun logout() {
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 }

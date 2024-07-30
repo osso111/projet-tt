@@ -23,10 +23,13 @@ interface ApiService {
         @Query("billNumber") billNumber: String? = null
     ): List<Facture>
 
-    @PUT("factures/{numFacture}/update")
+    @PUT("update")
     suspend fun updateFacture(
-        @Path("numFacture") numFacture: String
+        @Query("numFacture") numFacture: String,
+        @Query("datePayment") datePayment: String
     ): Facture
+
+
     @POST("history")
     fun getFactureHistory(
         @Body request: Map<String, String>
