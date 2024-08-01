@@ -2,6 +2,8 @@
 <network-security-config xmlns:android="http://schemas.android.com/apk/res/android">
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">192.168.0.3</domain>
+        <domain includeSubdomains="true">192.168.0.6</domain>
+
         <domain includeSubdomains="true">192.168.0.14</domain>
         <domain includeSubdomains="true">192.168.1.13</domain>
         <domain includeSubdomains="true">192.168.43.112</domain><!-- pahone -->

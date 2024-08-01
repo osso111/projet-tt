@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/paymentFragment">
+
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.example.elapplication.PaymentFragment"
+        android:label="Payment"
+        tools:layout="@layout/fragment_payment">
+        <action
+            android:id="@+id/action_paymentFragment_to_billDetailsFragment"
+            app:destination="@id/billDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/billDetailsFragment"
+        android:name="com.example.elapplication.BillDetailsFragment"
+        android:label="Bill Details"
+        tools:layout="@layout/fragment_bill_details">
+        <argument
+            android:name="factures"
+            app:argType="com.example.elapplication.Facture[]" />
+    </fragment>
+
+</navigation>

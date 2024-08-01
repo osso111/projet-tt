@@ -1,47 +1,71 @@
-/*package com.example.elapplication
+package com.example.elapplication
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class FactureAdapter(
-    private val factures: List<Facture>,
-    private val onConfirmPayment: (Facture) -> Unit
-) : RecyclerView.Adapter<FactureAdapter.FactureViewHolder>() {
+class BillAdapter(
+    private val onBillClick: (Facture) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FactureViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.bill_item, parent, false)
-        return FactureViewHolder(view)
+    companion object {
+        private const val TYPE_HEADER = 0
+        private const val TYPE_ITEM = 1
     }
 
-    override fun onBindViewHolder(holder: FactureViewHolder, position: Int) {
-        val facture = factures[position]
-        holder.bind(facture)
-        holder.itemView.setOnClickListener {
-            onConfirmPayment(facture)
+    private var bills: List<Facture> = emptyList()
+
+    fun submitList(newBills: List<Facture>) {
+        bills = newBills
+        notifyDataSetChanged()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == 0) TYPE_HEADER else TYPE_ITEM
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_HEADER) {
+            val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_bill_header, parent, false)
+            HeaderViewHolder(itemView)
+        } else {
+            val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_bill_row, parent, false)
+            BillViewHolder(itemView)
         }
     }
 
-    override fun getItemCount(): Int = factures.size
-
-    class FactureViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val numFactureTextView: TextView = itemView.findViewById(R.id.num_facture_text_view)
-        private val numTelTextView: TextView = itemView.findViewById(R.id.num_tel_text_view)
-        private val dateCreationTextView: TextView = itemView.findViewById(R.id.date_creation_text_view)
-        private val etatTextView: TextView = itemView.findViewById(R.id.etat_text_view)
-        private val typeFactTextView: TextView = itemView.findViewById(R.id.type_fact_text_view)
-        private val montantTextView: TextView = itemView.findViewById(R.id.montant_text_view)
-
-        fun bind(facture: Facture, onItemClick: (Facture) -> Unit) {
-            numFactureTextView.text = facture.numFacture
-            numTelTextView.text = facture.numTel
-            dateCreationTextView.text = facture.dateCreation
-            etatTextView.text = facture.etat
-            typeFactTextView.text = facture.typeFact
-            montantTextView.text = facture.montant.toString()
-            itemView.setOnClickListener { onItemClick(facture) }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is BillViewHolder) {
+            val bill = bills[position - 1] // Adjust for header
+            holder.bind(bill)
         }
     }
-}*/
+
+    override fun getItemCount() = bills.size + 1 // +1 for header
+
+    inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    inner class BillViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val billNumberText: TextView = itemView.findViewById(R.id.bill_number_text)
+        private val billAmountText: TextView = itemView.findViewById(R.id.bill_amount_text)
+        private val phoneNumberText: TextView = itemView.findViewById(R.id.phone_number_text)
+
+        fun bind(bill: Facture) {
+            billNumberText.text = bill.numFacture
+            billAmountText.text = bill.montant.toString()
+            phoneNumberText.text = bill.numTel
+
+            itemView.setOnClickListener {
+                itemView.findViewById<Button>(R.id.pay_button).visibility = View.VISIBLE
+                itemView.findViewById<Button>(R.id.pay_button).setOnClickListener {
+                    onBillClick(bill)
+                }
+            }
+        }
+    }
+}
